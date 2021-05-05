@@ -1,3 +1,4 @@
 @echo off
-python "C:\Data\Code\Python\Arknights Worm\index.py"
+cd /d %~dp0
+python index.py
 pause

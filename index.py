@@ -38,16 +38,19 @@ def isSameColor(c1, c2):
 class AUS(): # ALIVE UNTIL SUNSET 日落即逝
   colorDict = {
     "startBlue": {
+      "title": "开始行动（蓝色）",
       "x": 1760,
       "y": 956,
       "color": [0, 146, 212, 255]
     },
     "startRed": {
+      "title": "开始行动（红色）",
       "x": 1599,
       "y": 943,
       "color": [185, 69, 0, 255]
     },
     "over": {
+      "title": "行动结束",
       "x": 87,
       "y": 990,
       "color": [255, 255, 255, 255]
@@ -122,6 +125,7 @@ class AUS(): # ALIVE UNTIL SUNSET 日落即逝
     item = AUS.colorDict[key]
     realColor = self.getPixel(item["x"], item["y"])
     if (isSameColor(realColor, item["color"])):
+      print("点击 " + item["title"])
       cmd = "adb shell input tap " + repr(item["x"]) + " " + repr(item["y"])
       run(cmd)
       return True
@@ -130,27 +134,22 @@ class AUS(): # ALIVE UNTIL SUNSET 日落即逝
 
   # 分析图片像素
   def analysisImage(self):
-    if (self.analysisPixel("over")):
-      print("点击 行动结束")
-    elif (self.analysisPixel("startBlue")):
-      print("点击 开始行动 （蓝色）")
-    elif (self.analysisPixel("startRed")):
-      print("点击 开始行动 （红色）")
-    else:
-      print("无事发生")
-      # cmd = "adb shell input tap 959 69"
-      # run(cmd)
+    # 依次检测关键点像素
+    if (self.analysisPixel("over")): return
+    if (self.analysisPixel("startBlue")): return
+    if (self.analysisPixel("startRed")): return
+    print("无事发生")
 
 
   # 基础循环
   def circle(self, duration = 3):
-    self.times = self.times + 1
-    print("获取现场实况. . .第 " + str(self.times) + " 次")
-    self.screenshot()
-    print("分析粉丝热情中. . .")
-    self.analysisImage()
-    time.sleep(duration)
-    return self.circle()
+    while (True):
+      self.times = self.times + 1
+      print("获取现场实况. . .第 " + str(self.times) + " 次")
+      self.screenshot()
+      print("分析粉丝热情中. . .")
+      self.analysisImage()
+      time.sleep(duration)
 
 
 aus = AUS()
